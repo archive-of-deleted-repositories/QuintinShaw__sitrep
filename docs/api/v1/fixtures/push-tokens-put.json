@@ -1,0 +1,57 @@
+{
+  "description": "PUT /v1/devices/self/push-tokens — role: viewer/owner. Registers the CALLER's own device-level APNs tokens; there is no device_id field in the body (v1-architecture.md §2.3). Also includes the companion PUT /v1/tasks/:id/live-activity-token for the per-activity token, which is a separate route/table (§1.1).",
+
+  "device_level_push_tokens": {
+    "request": {
+      "method": "PUT",
+      "path": "/v1/devices/self/push-tokens",
+      "headers": {
+        "authorization": "Bearer ***REMOVED***",
+        "content-type": "application/json"
+      },
+      "body": {
+        "push_to_start_token": "***REMOVED***",
+        "alert_token": "***REMOVED***"
+      }
+    },
+    "response": {
+      "status": 200,
+      "body": { "ok": true }
+    }
+  },
+
+  "device_level_push_tokens_missing_body_400": {
+    "request": {
+      "method": "PUT",
+      "path": "/v1/devices/self/push-tokens",
+      "headers": {
+        "authorization": "Bearer ***REMOVED***",
+        "content-type": "application/json"
+      },
+      "body": {}
+    },
+    "response": {
+      "status": 400,
+      "body": { "error": "push_to_start_token or alert_token required" }
+    }
+  },
+
+  "per_activity_live_activity_token": {
+    "request": {
+      "method": "PUT",
+      "path": "/v1/tasks/build-release-3.2/live-activity-token",
+      "headers": {
+        "authorization": "Bearer ***REMOVED***",
+        "content-type": "application/json"
+      },
+      "body": {
+        "token": "***REMOVED***"
+      }
+    },
+    "response": {
+      "status": 200,
+      "body": { "ok": true }
+    },
+    "note": "Keyed by task_id in the path — replaces the old POST /v2/activities {source_id, token} body form. Distinct table (activity_tokens) from push_tokens; a second PUT for the same task_id from a different device replaces the first (v1-architecture.md §1.1, known single-viewer limitation)."
+  }
+}
